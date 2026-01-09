@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JEDCO SMART OPERATIONS SYSTEM</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- ═══════════════ Top Control Buttons ═══════════════ -->
+    <button class="toggle-btn" id="toggleBtn" onclick="togglePanel()">Control Panel</button>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+
+    <!-- ═══════════════ Header ═══════════════ -->
+    <header class="header">
+        <div class="header-title">Outdoor Yards and Transportation Operations Management</div>
+        <div class="header-company">JEDCO</div>
+        <div class="header-info">
+            <div class="info-box">
+                <div class="info-box-label">Time</div>
+                <div class="info-box-value" id="currentTime">--:--:--</div>
+            </div>
+            <div class="info-box" id="shiftBox">
+                <div class="info-box-label">Shift</div>
+                <div class="info-box-value" id="currentShift">-</div>
+            </div>
+            <div class="info-box">
+                <div class="info-box-label">Date</div>
+                <div class="info-box-value" id="currentDate">----/--/--</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════ Unified Statistics Bar ═══════════════ -->
+    <div class="unified-stats-bar">
+        <!-- Current Buses Group -->
+        <div class="stats-group">
+            <div class="mini-stat" onclick='filterBuses("all")'>
+                <span class="mini-label">Buses</span>
+                <div class="mini-box"><span class="mini-value" id="totalBuses">0</span></div>
+            </div>
+            <div class="mini-stat green" onclick='filterBuses("early")'>
+                <span class="mini-label">Early</span>
+                <div class="mini-box"><span class="mini-value" id="earlyBuses">0</span></div>
+            </div>
+            <div class="mini-stat blue" onclick='filterBuses("ontime")'>
+                <span class="mini-label">Ontime</span>
+                <div class="mini-box"><span class="mini-value" id="ontimeBuses">0</span></div>
+            </div>
+            <div class="mini-stat red" onclick='filterBuses("late")'>
+                <span class="mini-label">Late</span>
+                <div class="mini-box"><span class="mini-value" id="lateBuses">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Passengers</span>
+                <div class="mini-box"><span class="mini-value" id="totalPax">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Flights</span>
+                <div class="mini-box"><span class="mini-value" id="totalFlights">0</span></div>
+            </div>
+        </div>
+
+        <div class="stats-divider"></div>
+
+        <!-- Daily Statistics Group -->
+        <div class="stats-group">
+            <div class="mini-stat">
+                <span class="mini-label">Today</span>
+                <div class="mini-box"><span class="mini-value" id="dailyBuses">0</span></div>
+            </div>
+            <div class="mini-stat green">
+                <span class="mini-label">Early</span>
+                <div class="mini-box"><span class="mini-value" id="dailyEarly">0</span></div>
+            </div>
+            <div class="mini-stat blue">
+                <span class="mini-label">On Time</span>
+                <div class="mini-box"><span class="mini-value" id="dailyOntime">0</span></div>
+            </div>
+            <div class="mini-stat red">
+                <span class="mini-label">Late</span>
+                <div class="mini-box"><span class="mini-value" id="dailyLate">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Passengers</span>
+                <div class="mini-box"><span class="mini-value" id="dailyPax">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Flights</span>
+                <div class="mini-box"><span class="mini-value" id="dailyFlights">0</span></div>
+            </div>
+        </div>
+
+        <div class="stats-divider"></div>
+
+        <!-- Visa Types - Buses Group -->
+        <div class="stats-group">
+            <div class="mini-stat">
+                <span class="mini-label">Passengers</span>
+                <div class="mini-box"><span class="mini-value" id="totalPax">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Flights</span>
+                <div class="mini-box"><span class="mini-value" id="visaUmrah">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Visit</span>
+                <div class="mini-box"><span class="mini-value" id="visaVisit">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Tourism</span>
+                <div class="mini-box"><span class="mini-value" id="visaTourism">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">GCC</span>
+                <div class="mini-box"><span class="mini-value" id="visaGCC">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Work</span>
+                <div class="mini-box"><span class="mini-value" id="visaWork">0</span></div>
+            </div>
+        </div>
+
+        <div class="stats-divider"></div>
+
+        <!-- Visa Types - Passengers Group -->
+        <div class="stats-group">
+            <div class="mini-stat">
+                <span class="mini-label">Hajj Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxHajj">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Umrah Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxUmrah">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Visit Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxVisit">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Tourism Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxTourism">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">GCC Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxGCC">0</span></div>
+            </div>
+            <div class="mini-stat">
+                <span class="mini-label">Work Pax</span>
+                <div class="mini-box"><span class="mini-value" id="visaPaxWork">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ Color Legend ═══════════════ -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color green"></div>
+            <span>Early (More than 7 hours)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color blue"></div>
+            <span>On Time (3 to 7 hours)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color red"></div>
+            <span>Late (Less than 3 hours)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color empty"></div>
+            <span>Empty</span>
+        </div>
+    </div>
+<!-- ═══════════════ Main Tabs Bar ═══════════════ -->
+    <div class="main-tabs-bar">
+        <div class="main-tabs-container">
+            <button class="main-tab" id="devTab" onclick="toggleDevSection()">
+                <span class="main-tab-icon">🔧</span>
+                <span class="main-tab-text">Developer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══════════════ Developer Section ═══════════════ -->
+    <div class="dev-section" id="devSection">
+        <div class="dev-section-header">
+            <span class="dev-section-title">🔧 Developer Panel</span>
+            <button class="dev-section-close" onclick="toggleDevSection()">✕</button>
+        </div>
+        <div class="dev-section-content" id="devSectionContent">
+            <!-- Developer spot display boxes -->
+            <div class="dev-spots-container">
+                <div class="dev-spot"></div>
+                <div class="dev-spot"></div>
+            </div>
+        </div>
+    </div>
+    <!-- ═══════════════ Main Container ═══════════════ -->
+    <div class="main-container">
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Parking Spots Container -->
+            <div class="parking-container">
+                <!-- Entrance Side -->
+                <div class="parking-section">
+                    <div class="section-title">Entrance Side (42 Spots)</div>
+                    <div class="parking-grid" id="entranceGrid"></div>
+                </div>
+                <!-- Exit Side -->
+                <div class="parking-section">
+                    <div class="section-title">Exit Side (45 Spots)</div>
+                    <div class="parking-grid exit-grid" id="exitGrid"></div>
+                </div>
+            </div>
+
+            <!-- Gates Section -->
+            <div class="gates-section">
+                <div class="section-title">Departure Hall Gates</div>
+                <div class="gates-grid" id="gatesGrid"></div>
+            </div>
+        </div>
+
+        <!-- ═══════════════ Control Panel ═══════════════ -->
+        <div class="control-panel" id="controlPanel">
+            <!-- Panel Tabs -->
+            <div class="panel-tabs">
+                <button class="panel-tab active" onclick='showTab("main",event)' title="Main">Main</button>
+                <button class="panel-tab" onclick='showTab("settings",event)' title="Settings">Settings</button>
+                <button class="panel-tab" onclick='showTab("alerts",event)' title="Alerts">Alerts</button>
+                <button class="panel-tab" onclick='showTab("kpis",event)' title="KPIs">KPIs</button>
+                <button class="panel-tab" onclick='showTab("forms",event)' title="Forms">Forms</button>
+                <button class="panel-tab" onclick='showTab("registered",event)' title="Registered">Registered</button>
+                <button class="panel-tab" onclick='showTab("segregation",event)' title="Segregation">Segregation</button>
+                <button class="panel-tab" onclick='showTab("departed",event)' title="Departed">Departed</button>
+            </div>
+
+            <!-- ═══════════════ Main Tab ═══════════════ -->
+            <div class="tab-content active" id="tab-main">
+                <!-- Statistics Section -->
+                <div class="panel-section">
+                    <div class="panel-title">Statistics</div>
+                    <div class="panel-stat">
+                        <span>Spots:</span>
+                        <span class="panel-stat-value">87</span>
+                    </div>
+                    <div class="panel-stat">
+                        <span>Occupied:</span>
+                        <span class="panel-stat-value" id="panelOccupied">0</span>
+                    </div>
+                    <div class="panel-stat">
+                        <span>Empty:</span>
+                        <span class="panel-stat-value" id="panelEmpty">87</span>
+                    </div>
+                    <div class="panel-stat">
+                        <span>Early:</span>
+                        <span class="panel-stat-value" style="color:var(--green)" id="panelEarly">0</span>
+                    </div>
+                    <div class="panel-stat">
+                        <span>On Time:</span>
+                        <span class="panel-stat-value" style="color:var(--blue)" id="panelOntime">0</span>
+                    </div>
+                    <div class="panel-stat">
+                        <span>Late:</span>
+                        <span class="panel-stat-value" style="color:var(--red)" id="panelLate">0</span>
+                    </div>
+                </div>
+
+                <!-- Zoom Section -->
+                <div class="panel-section">
+                    <div class="panel-title">Zoom</div>
+                    <div style="display:flex;gap:5px">
+                        <button class="panel-btn primary" onclick="zoomOut()" style="flex:1">➖</button>
+                        <button class="panel-btn primary" onclick="zoomReset()" style="flex:1" id="zoomLevel">100%</button>
+                        <button class="panel-btn primary" onclick="zoomIn()" style="flex:1">➕</button>
+                    </div>
+
+                    <!-- Spot Size Section -->
+                    <div class="panel-section">
+                        <div class="panel-title">Spot Size</div>
+                        <div style="display:flex;gap:5px">
+                            <button class="panel-btn primary" onclick="spotSizeOut()" style="flex:1">➖</button>
+                            <button class="panel-btn primary" style="flex:1" id="spotSizeLevel">55px</button>
+                            <button class="panel-btn primary" onclick="spotSizeIn()" style="flex:1">➕</button>
+                        </div>
+                        <input type="range" min="40" max="100" value="55" style="width:100%;margin-top:8px" onchange="setSpotSize(this.value)" id="spotSizeSlider">
+                    </div>
+
+                    <input type="range" min="50" max="150" value="100" style="width:100%;margin-top:8px" onchange="setZoom(this.value)" id="zoomSlider">
+                </div>
+
+                <!-- Edit Section -->
+                <div class="panel-section">
+                    <div class="panel-title">Edit</div>
+                    <button class="panel-btn success" onclick="toggleEditMode()" id="editBtn">Enable Edit Mode</button>
+
+                    <div class="add-bus-section">
+                        <div style="font-size:.8rem;color:var(--primary);margin-bottom:8px">Add New Bus</div>
+                        <input type="number" class="add-bus-input" placeholder="Spot Number (1-87)" id="newSpotNumber" min="1" max="87">
+                        <button class="panel-btn primary" onclick="addNewBus()">Add New Bus</button>
+                    </div>
+
+                    <div id="spotActions" style="display:none;margin-top:10px">
+                        <div style="font-size:.8rem;color:var(--primary);margin-bottom:8px">Selected Spot: <span id="selectedSpotNum">-</span></div>
+                        <div class="spot-actions">
+                            <button class="panel-btn info" onclick="editSpot()">Edit</button>
+                            <button class="panel-btn primary" onclick="moveSpot()">Move</button>
+                            <button class="panel-btn danger" onclick="deleteSpot()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Section -->
+                <div class="panel-section">
+                    <div class="panel-title">Data</div>
+                    <button class="panel-btn primary" onclick="exportJSON()">Export JSON</button>
+                    <button class="panel-btn info" onclick="exportCSV()">Export CSV</button>
+                    <button class="panel-btn primary" onclick='document.getElementById("importFile").click()'>Import</button>
+                    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+                    <button class="panel-btn danger" onclick="resetAll()">Clear All</button>
+                    <button class="panel-btn warning" onclick="clearAllData()">Clear Data</button>
+                    <button class="panel-btn" style="background:linear-gradient(135deg,#9c27b0,#ba68c8)" onclick="loadTestData()">Load 20 Test Buses</button>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Settings Tab ═══════════════ -->
+            <div class="tab-content" id="tab-settings">
+                <!-- Time Settings -->
+                <div class="panel-section">
+                    <div class="panel-title">Time Settings</div>
+                    <div class="setting-row">
+                        <span class="setting-label">Early Threshold (hours)</span>
+                        <input type="number" class="setting-input" value="7" min="1" max="24" id="earlyThreshold" onchange="updateThresholds()">
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Late Threshold (hours)</span>
+                        <input type="number" class="setting-input" value="3" min="1" max="12" id="lateThreshold" onchange="updateThresholds()">
+                    </div>
+                </div>
+
+                <!-- Color Settings -->
+                <div class="panel-section">
+                    <div class="panel-title">Color Settings</div>
+                    <div class="setting-row">
+                        <span class="setting-label">Primary Color</span>
+                        <input type="color" class="color-picker" value="#ffd700" id="colorPrimary" onchange="updateColors()">
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Early Color</span>
+                        <input type="color" class="color-picker" value="#4caf50" id="colorEarly" onchange="updateColors()">
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">On Time Color</span>
+                        <input type="color" class="color-picker" value="#2196f3" id="colorOntime" onchange="updateColors()">
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Late Color</span>
+                        <input type="color" class="color-picker" value="#f44336" id="colorLate" onchange="updateColors()">
+                    </div>
+                </div>
+
+                <!-- Alert Settings -->
+                <div class="panel-section">
+                    <div class="panel-title">Alert Settings</div>
+                    <div class="setting-row">
+                        <span class="setting-label">Enable Sound</span>
+                        <div class="setting-toggle" id="soundToggle" onclick='toggleSetting("sound")'></div>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Pop-up Notifications</span>
+                        <div class="setting-toggle active" id="notifToggle" onclick='toggleSetting("notif")'></div>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-label">Auto Refresh</span>
+                        <div class="setting-toggle active" id="autoRefreshToggle" onclick='toggleSetting("autoRefresh")'></div>
+                    </div>
+                </div>
+
+                <!-- Display Settings -->
+                <div class="panel-section">
+                    <div class="panel-title">Display Settings</div>
+                    <div class="setting-row">
+                        <span class="setting-label">Spot Size (px)</span>
+                        <input type="number" class="setting-input" value="80" min="60" max="120" id="spotSize" onchange="updateSpotSize()">
+                    </div>
+                </div>
+
+                <!-- Settings Buttons -->
+                <div class="panel-section">
+                    <button class="panel-btn success" onclick="saveSettings()">Save Settings</button>
+                    <button class="panel-btn primary" onclick="loadSettings()">Load Settings</button>
+                    <button class="panel-btn danger" onclick="resetSettings()">Reset</button>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Alerts Tab ═══════════════ -->
+            <div class="tab-content" id="tab-alerts">
+                <div class="panel-section">
+                    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center">
+                        <span>Active Alerts (<span id="alertsCount">0</span>)</span>
+                    </div>
+                    <div style="display:flex;gap:5px;margin-bottom:10px">
+                        <button class="panel-btn danger" onclick="clearAlerts()" style="flex:1;padding:6px;font-size:.75rem">Clear</button>
+                        <button class="panel-btn info" onclick="testAlert()" style="flex:1;padding:6px;font-size:.75rem">Test</button>
+                    </div>
+                    <div class="alerts-list" id="alertsList">
+                        <div style="text-align:center;color:var(--text-muted);padding:20px">No alerts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ KPIs Tab ═══════════════ -->
+            <div class="tab-content" id="tab-kpis">
+                <div class="panel-section">
+                    <div class="panel-title">Key Performance Indicators</div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiOccupancy">0%</div>
+                        <div class="kpi-label">Occupancy Rate</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="occupancyBar" style="width:0%;background:var(--blue)"></div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiAvgWait">0</div>
+                        <div class="kpi-label">Avg Wait Time (minutes)</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label" style="margin-bottom:5px">Status Distribution</div>
+                        <div class="chart-bars">
+                            <div class="chart-bar" id="barEarly" style="height:30%;background:var(--green)">
+                                <span class="chart-bar-label">Early</span>
+                            </div>
+                            <div class="chart-bar" id="barOntime" style="height:40%;background:var(--blue)">
+                                <span class="chart-bar-label">On Time</span>
+                            </div>
+                            <div class="chart-bar" id="barLate" style="height:30%;background:var(--red)">
+                                <span class="chart-bar-label">Late</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiOnTimeRate">0%</div>
+                        <div class="kpi-label">On-Time Departure Rate</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="onTimeBar" style="width:0%;background:var(--green)"></div>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiAvgPax">0</div>
+                        <div class="kpi-label">Avg Passengers/Bus</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-value" id="kpiPeakOccupancy">0%</div>
+                        <div class="kpi-label">Peak Occupancy Today</div>
+                    </div>
+
+                    <div style="display:flex;gap:8px">
+                        <div class="kpi-card" style="flex:1">
+                            <div class="kpi-value" style="font-size:1rem" id="kpiBusesToday">0</div>
+                            <div class="kpi-label">Buses Today</div>
+                        </div>
+                        <div class="kpi-card" style="flex:1">
+                            <div class="kpi-value" style="font-size:1rem" id="kpiPaxToday">0</div>
+                            <div class="kpi-label">Passengers Today</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Forms Tab ═══════════════ -->
+            <div class="tab-content" id="tab-forms">
+                <div class="panel-section">
+                    <div class="panel-title">Available Forms</div>
+                    <div class="form-list">
+                        <div class="form-item" onclick='openForm("ScrLogIn")'>
+                            <span class="form-icon">1</span>
+                            <div>
+                                <div class="form-name">Login</div>
+                                <div class="form-desc">ScrLogIn - Select Work Location</div>
+                            </div>
+                        </div>
+                        <div class="form-item" onclick='openForm("ScrSegregationIn")'>
+                            <span class="form-icon">2</span>
+                            <div>
+                                <div class="form-name">Segregation Entry</div>
+                                <div class="form-desc">ScrSegregationIn - Register Bus Entry</div>
+                            </div>
+                        </div>
+                        <div class="form-item" onclick='openForm("ScrWelcomeLounge")'>
+                            <span class="form-icon">3</span>
+                            <div>
+                                <div class="form-name">Waiting Lounge</div>
+                                <div class="form-desc">ScrWelcomeLounge - Manage Spots</div>
+                            </div>
+                        </div>
+                        <div class="form-item" onclick='openForm("ScrSegregationExit")'>
+                            <span class="form-icon">4</span>
+                            <div>
+                                <div class="form-name">Segregation Exit</div>
+                                <div class="form-desc">ScrSegregationExit - Register Bus Exit</div>
+                            </div>
+                        </div>
+                        <div class="form-item" onclick='openForm("ScrCurbside")'>
+                            <span class="form-icon">5</span>
+                            <div>
+                                <div class="form-name">Curbside</div>
+                                <div class="form-desc">ScrCurbside - Boarding Area</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Registered Buses Tab ═══════════════ -->
+            <div class="tab-content" id="tab-registered">
+                <div class="panel-section">
+                    <div class="panel-title">Registered Buses (<span id="registeredCount">0</span>)</div>
+                    <div class="bus-list" id="registeredList">
+                        <div style="text-align:center;color:var(--text-muted);padding:20px">No registered buses</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Segregation Buses Tab ═══════════════ -->
+            <div class="tab-content" id="tab-segregation">
+                <div class="panel-section">
+                    <div class="panel-title">Segregation Buses (<span id="segregationCount">0</span>)</div>
+                    <div class="bus-list" id="segregationList">
+                        <div style="text-align:center;color:var(--text-muted);padding:20px">No buses in segregation</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══════════════ Departed Buses Tab ═══════════════ -->
+            <div class="tab-content" id="tab-departed">
+                <div class="panel-section">
+                    <div class="panel-title">Departed Buses (<span id="departedCount">0</span>)</div>
+                    <div style="display:flex;gap:5px;margin-bottom:10px">
+                        <div class="kpi-card" style="flex:1;padding:5px">
+                            <div class="kpi-value" style="font-size:1rem" id="departedToday">0</div>
+                            <div class="kpi-label">Today</div>
+                        </div>
+                        <div class="kpi-card" style="flex:1;padding:5px">
+                            <div class="kpi-value" style="font-size:1rem" id="departedPax">0</div>
+                            <div class="kpi-label">Passengers</div>
+                        </div>
+                    </div>
+                    <div class="bus-list" id="departedList">
+                        <div style="text-align:center;color:var(--text-muted);padding:20px">No buses have departed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ Footer ═══════════════ -->
+    <footer class="footer">
+        Bus Terminal Operations Management v4.0 | JEDCO SMART OPERATIONS SYSTEM | Last Updated: <span id="lastUpdate">--:--:--</span>
+    </footer>
+
+    <!-- ═══════════════ Hidden Elements ═══════════════ -->
+    <div class="tooltip" id="tooltip"></div>
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Forms Menu -->
+    <div class="forms-menu" id="formsMenu">
+        <div class="forms-menu-title">Select Form</div>
+        <div class="forms-menu-item" onclick='selectFormFromMenu("ScrLogIn")'>
+            <span class="forms-menu-item-icon">1</span>
+            <span class="forms-menu-item-name">ScrLogIn</span>
+            <span class="forms-menu-item-status" id="formStatus1">-</span>
+        </div>
+        <div class="forms-menu-item" onclick='selectFormFromMenu("ScrSegregationIn")'>
+            <span class="forms-menu-item-icon">2</span>
+            <span class="forms-menu-item-name">ScrSegregationIn</span>
+            <span class="forms-menu-item-status" id="formStatus2">-</span>
+        </div>
+        <div class="forms-menu-item" onclick='selectFormFromMenu("ScrWelcomeLounge")'>
+            <span class="forms-menu-item-icon">3</span>
+            <span class="forms-menu-item-name">ScrWelcomeLounge</span>
+            <span class="forms-menu-item-status" id="formStatus3">-</span>
+        </div>
+        <div class="forms-menu-item" onclick='selectFormFromMenu("ScrSegregationExit")'>
+            <span class="forms-menu-item-icon">4</span>
+            <span class="forms-menu-item-name">ScrSegregationExit</span>
+            <span class="forms-menu-item-status" id="formStatus4">-</span>
+        </div>
+        <div class="forms-menu-item" onclick='selectFormFromMenu("ScrCurbside")'>
+            <span class="forms-menu-item-icon">5</span>
+            <span class="forms-menu-item-name">ScrCurbside</span>
+            <span class="forms-menu-item-status" id="formStatus5">-</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════ Modal Window ═══════════════ -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal" id="formModal">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">Form</span>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button class="panel-btn primary" onclick="saveFormData()" style="flex:1">💾 Save</button>
+                <button class="panel-btn danger" onclick="closeModal()" style="flex:1">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ JavaScript File ═══════════════ -->
+    <script src="scripts/app.js" defer="defer"></script>
+</body>
+</html>
